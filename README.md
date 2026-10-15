@@ -1,6 +1,6 @@
 # 🚀 JSON Master Portal & LLM Anti-Hallucination Encyclopedia
 
-[![GitHub Pages](https://img.shields.io/badge/Hosted%20On-GitHub%20Pages-blue?style=flat&logo=github)](https://pages.github.com/)
+[![GitHub Pages](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue?style=flat&logo=github)](https://santoshadkar.github.io/json-master-portal/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Standards](https://img.shields.io/badge/RFC-8259%20%7C%20ECMA--404-emerald)](https://datatracker.ietf.org/doc/html/rfc8259)
 [![Structured Outputs](https://img.shields.io/badge/AI-Structured%20Outputs-purple)](https://platform.openai.com/docs/guides/structured-outputs)
