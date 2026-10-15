@@ -1,6 +1,6 @@
 # 🚀 JSON Master Portal & LLM Anti-Hallucination Encyclopedia
 
-[![GitHub Pages](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue?style=flat&logo=github)](https://santoshadkar.github.io/json-master-portal/)
+[![Deployed with Vercel](https://img.shields.io/badge/Deployed%20with-Vercel-black?style=flat&logo=vercel)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsantoshadkar%2Fjson-master-portal)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Standards](https://img.shields.io/badge/RFC-8259%20%7C%20ECMA--404-emerald)](https://datatracker.ietf.org/doc/html/rfc8259)
 [![Structured Outputs](https://img.shields.io/badge/AI-Structured%20Outputs-purple)](https://platform.openai.com/docs/guides/structured-outputs)
@@ -95,7 +95,24 @@ xdg-open index.html
 
 ---
 
-## 🌐 Deploy to GitHub Pages (Free Hosting)
+## ⚡ Deploy to Vercel (Recommended)
+
+You can deploy this portal to Vercel with zero configuration:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsantoshadkar%2Fjson-master-portal)
+
+### Manual Vercel Deployment:
+1. Log in to [vercel.com](https://vercel.com).
+2. Click **"Add New..."** ➔ **"Project"**.
+3. Import your GitHub repository: `santoshadkar/json-master-portal`.
+4. Keep the default settings (**Framework Preset:** `Other`, **Root Directory:** `./`).
+5. Click **"Deploy"**.
+
+Your portal will be live globally on Vercel's Edge Network with automatic HTTPS (e.g. `https://json-master-portal.vercel.app`).
+
+---
+
+## 🌐 Deploy to GitHub Pages (Alternative)
 
 1. Push this repository to GitHub.
 2. In your repository on GitHub, navigate to:
@@ -103,8 +120,8 @@ xdg-open index.html
 3. Under **Build and deployment**:
    - **Source:** Deploy from a branch.
    - **Branch:** `main` / `root`.
-4. Click **Save**. Your portal will be live globally at:
-   `https://<your-username>.github.io/json-master-portal/`
+4. Click **Save**. Your portal will be live at:
+   `https://santoshadkar.github.io/json-master-portal/`
 
 ---
 
