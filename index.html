@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Complete Reference & LLM Anti-Hallucination Encyclopedia</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* Custom scrollbars and styling */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--card, #0f172a); }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .tab-active { border-bottom: 2px solid #38bdf8; color: #38bdf8; font-weight: 600; background: rgba(56, 189, 248, 0.08); }
+    .subtab-active { background: #0284c7; color: #ffffff; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen">
+  
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-6 py-4 shadow-xl">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 font-mono font-bold text-xl shadow-inner">
+          { }
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            JSON Encyclopedia & LLM Engineering Guide
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-950 text-sky-400 border border-sky-800 uppercase">Enterprise Edition</span>
+          </h1>
+          <p class="text-xs text-slate-400">RFC 8259, Dialects, Tokenization Mechanics, 5-Tier Mitigation, Pydantic/Zod & Prompts</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs & Search -->
+      <div class="flex flex-col md:flex-row items-center gap-3 w-full lg:w-auto">
+        <div class="relative w-full md:w-56">
+          <input id="search-input" oninput="handleSearch(this.value)" placeholder="Search RFC, Pydantic, Zod..." class="bg-slate-950 border border-slate-700 text-xs px-3 py-1.5 rounded-lg w-full focus:outline-none focus:border-sky-500 text-slate-200 placeholder-slate-500">
+          <span class="absolute right-2.5 top-1.5 text-slate-500 text-xs pointer-events-none">🔍</span>
+        </div>
+
+        <nav class="flex flex-wrap items-center gap-1 sm:gap-1.5 text-xs" id="nav-tabs">
+          <button onclick="switchTab('tab-fundamentals')" class="tab-btn px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition tab-active" data-target="tab-fundamentals">1. Fundamentals</button>
+          <button onclick="switchTab('tab-variants')" class="tab-btn px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition" data-target="tab-variants">2. Dialects</button>
+          <button onclick="switchTab('tab-hallucination')" class="tab-btn px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition" data-target="tab-hallucination">3. Hallucinations</button>
+          <button onclick="switchTab('tab-mitigation')" class="tab-btn px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition" data-target="tab-mitigation">4. Mitigation</button>
+          <button onclick="switchTab('tab-prompts')" class="tab-btn px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition" data-target="tab-prompts">5. Prompts</button>
+          <button onclick="switchTab('tab-playground')" class="tab-btn px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition" data-target="tab-playground">6. Playground</button>
+          <button onclick="switchTab('tab-synthesizer')" class="tab-btn px-2.5 py-1.5 rounded-lg text-amber-300 hover:text-white hover:bg-amber-950/60 border border-amber-800/60 transition" data-target="tab-synthesizer">⚡ 7. Synthesizer</button>
+          <button onclick="switchTab('tab-sdks')" class="tab-btn px-2.5 py-1.5 rounded-lg text-sky-300 hover:text-white hover:bg-sky-950/60 border border-sky-800/60 transition" data-target="tab-sdks">🤖 8. AI SDKs</button>
+          <button onclick="switchTab('tab-security')" class="tab-btn px-2.5 py-1.5 rounded-lg text-rose-300 hover:text-white hover:bg-rose-950/60 border border-rose-800/60 transition" data-target="tab-security">🛡️ 9. Security</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: DEEP FUNDAMENTALS & SPECIFICATION   -->
+    <!-- ========================================== -->
+    <section id="tab-fundamentals" class="tab-content space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4 mb-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-400 text-xs font-semibold mb-2">
+              Formal Specifications: RFC 8259, ECMA-404, RFC 7493 (I-JSON)
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">The Comprehensive Anatomy of JSON</h2>
+          </div>
+          <div class="text-xs text-slate-400 font-mono">
+            MIME Type: <code class="text-sky-300 bg-slate-950 px-2 py-1 rounded">application/json</code> | UTF-8 Required
+          </div>
+        </div>
+
+        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+          JavaScript Object Notation (JSON) is an immutable, language-independent data interchange format. Originally popularized by Douglas Crockford in 2001, JSON is governed strictly by the Internet Engineering Task Force (IETF) via <strong class="text-sky-400">RFC 8259</strong> and Ecma International via <strong class="text-sky-400">ECMA-404</strong>.
+        </p>
+
+        <!-- EBNF Grammar Breakdown -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-8">
+          <h3 class="text-sm font-bold text-sky-400 mb-2 uppercase tracking-wider flex items-center gap-2">
+            <span>Formal EBNF Grammar (Extended Backus-Naur Form)</span>
+          </h3>
+          <p class="text-xs text-slate-400 mb-4">Every RFC 8259 compliant parser compiles the following mathematical production rules:</p>
+          <pre class="bg-black/60 p-4 rounded-lg text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed border border-slate-800">
+JSON-text = ws value ws
+value     = false / true / null / object / array / number / string
+
+object    = "{" ws [ member *( ws "," ws member ) ] ws "}"
+member    = string ws ":" ws value
+
+array     = "[" ws [ value *( ws "," ws value ) ] ws "]"
+
+string    = quotation-mark *char quotation-mark
+number    = [ minus ] int [ frac ] [ exp ]
+int       = "0" / ( digit1-9 *digit )
+frac      = "." 1*digit
+exp       = ( "e" / "E" ) [ minus / plus ] 1*digit
+ws        = *( %x20 / %x09 / %x0A / %x0D ) ; Space, Tab, LF (\n), CR (\r)</pre>
+        </div>
+
+        <!-- The 6 Data Types In Depth -->
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <span class="text-sky-400 font-mono">§ 1.1</span> The 6 Canonical JSON Data Types & Boundary Edge Cases
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- 1. String -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-sky-400 font-bold text-base">1. String</span>
+                <span class="text-[10px] bg-sky-950 text-sky-300 px-2 py-0.5 rounded border border-sky-800">Primitive</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Zero or more Unicode codepoints enclosed strictly in double quotes (<code class="text-amber-300">"..."</code>). Control characters (<code class="text-rose-400">U+0000</code> through <code class="text-rose-400">U+001F</code>) MUST be escaped.
+              </p>
+              <div class="text-[11px] font-mono text-slate-400 bg-slate-900 p-2.5 rounded border border-slate-800 mb-3 space-y-1">
+                <div><span class="text-amber-300">\"</span> : Quotation mark</div>
+                <div><span class="text-amber-300">\\</span> : Reverse solidus</div>
+                <div><span class="text-amber-300">\/</span> : Solidus (slash)</div>
+                <div><span class="text-amber-300">\b</span> : Backspace (U+0008)</div>
+                <div><span class="text-amber-300">\f</span> : Form feed (U+000C)</div>
+                <div><span class="text-amber-300">\n</span> : Newline / Line feed</div>
+                <div><span class="text-amber-300">\r</span> : Carriage return</div>
+                <div><span class="text-amber-300">\t</span> : Character tabulation</div>
+                <div><span class="text-amber-300">\uXXXX</span> : 4-hex Unicode codepoint</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-amber-400/90 font-mono border-t border-slate-800 pt-2">
+              Emojis outside BMP require surrogate pairs: <code class="text-emerald-300">"\uD83D\uDE80"</code> (🚀).
+            </div>
+          </div>
+
+          <!-- 2. Number -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-sky-400 font-bold text-base">2. Number</span>
+                <span class="text-[10px] bg-sky-950 text-sky-300 px-2 py-0.5 rounded border border-sky-800">Primitive</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Decimals using base-10 digits. Supports negative sign (<code class="text-sky-300">-</code>), fractional part (<code class="text-sky-300">.</code>), and exponent (<code class="text-sky-300">e/E</code>).
+              </p>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 text-[11px] font-mono text-emerald-300 mb-3 space-y-1">
+                <div>Valid: 42, -0.5, 1.42e+3, 6.022e23</div>
+                <div class="text-rose-400">Invalid: +42 (no leading plus)</div>
+                <div class="text-rose-400">Invalid: 05 (no leading zeros)</div>
+                <div class="text-rose-400">Invalid: .5 or 5. (must be 0.5, 5.0)</div>
+                <div class="text-rose-400">Invalid: NaN, Infinity, 0xFF</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-rose-400 font-mono border-t border-slate-800 pt-2">
+              <strong>IEEE 754 Limit:</strong> Numbers &gt; <code class="text-amber-300">2^53 - 1</code> (9007199254740991) lose precision in JS. Large IDs must be strings!
+            </div>
+          </div>
+
+          <!-- 3. Boolean -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-sky-400 font-bold text-base">3. Boolean</span>
+                <span class="text-[10px] bg-sky-950 text-sky-300 px-2 py-0.5 rounded border border-sky-800">Primitive</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Literal truth values. Exactly two states: <code class="text-emerald-400">true</code> and <code class="text-rose-400">false</code>. Case-sensitive and strictly lowercase.
+              </p>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 text-[11px] font-mono text-slate-300 mb-3">
+                <div class="text-emerald-300">Valid: {"is_active": true}</div>
+                <div class="text-rose-400">Invalid: True, False (Python leak)</div>
+                <div class="text-rose-400">Invalid: 1, 0 (must not coerce)</div>
+                <div class="text-rose-400">Invalid: "true", "false" (strings)</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-slate-400 font-mono border-t border-slate-800 pt-2">
+              RFC forbids any casing variations such as <code class="text-rose-300">TRUE</code> or <code class="text-rose-300">False</code>.
+            </div>
+          </div>
+
+          <!-- 4. Null -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-sky-400 font-bold text-base">4. Null</span>
+                <span class="text-[10px] bg-sky-950 text-sky-300 px-2 py-0.5 rounded border border-sky-800">Primitive</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Represents the intentional absence of any value or null reference. Must be exactly the lowercase literal <code class="text-purple-300">null</code>.
+              </p>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 text-[11px] font-mono text-slate-300 mb-3">
+                <div class="text-emerald-300">Valid: {"parent_id": null}</div>
+                <div class="text-rose-400">Invalid: None (Python leak)</div>
+                <div class="text-rose-400">Invalid: nil, NULL, undefined</div>
+                <div class="text-rose-400">Invalid: omitted key (if required)</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-purple-400 font-mono border-t border-slate-800 pt-2">
+              Crucial in LLM prompting: Use <code class="text-purple-300">null</code> as the explicit fallback to prevent factual fabrication.
+            </div>
+          </div>
+
+          <!-- 5. Object -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-sky-400 font-bold text-base">5. Object</span>
+                <span class="text-[10px] bg-purple-950 text-purple-300 px-2 py-0.5 rounded border border-purple-800">Structural</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Unordered collection of zero or more key/value pairs enclosed in curly brackets (<code class="text-sky-300">{ }</code>). Keys MUST be strings.
+              </p>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 text-[11px] font-mono text-slate-300 mb-3">
+                <div class="text-emerald-300">Valid: {"id": 101, "role": "admin"}</div>
+                <div class="text-rose-400">Invalid: {id: 101} (unquoted key)</div>
+                <div class="text-rose-400">Invalid: {'id': 101} (single quotes)</div>
+                <div class="text-rose-400">Invalid: {"a": 1,} (trailing comma)</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-amber-400 font-mono border-t border-slate-800 pt-2">
+              <strong>Duplicate Keys:</strong> RFC 8259 advises keys SHOULD be unique. Duplicate keys lead to undefined parser behavior.
+            </div>
+          </div>
+
+          <!-- 6. Array -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-sky-400 font-bold text-base">6. Array</span>
+                <span class="text-[10px] bg-purple-950 text-purple-300 px-2 py-0.5 rounded border border-purple-800">Structural</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                Ordered sequence of zero or more values separated by commas and enclosed in square brackets (<code class="text-sky-300">[ ]</code>). Elements can be heterogeneous.
+              </p>
+              <div class="bg-slate-900 p-2.5 rounded border border-slate-800 text-[11px] font-mono text-slate-300 mb-3">
+                <div class="text-emerald-300">Valid: [1, "two", null, {"four": 4}]</div>
+                <div class="text-rose-400">Invalid: [1, 2, 3,] (trailing comma)</div>
+                <div class="text-rose-400">Invalid: (1, 2, 3) (parentheses)</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-sky-400 font-mono border-t border-slate-800 pt-2">
+              Preserves exact element ordering. Zero-indexed in all programming languages.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- I-JSON RFC 7493 Specifications -->
+        <div class="mt-8 bg-sky-950/30 border border-sky-800/60 rounded-xl p-5">
+          <h3 class="text-sm font-bold text-sky-300 mb-2 flex items-center gap-2">
+            <span>Enterprise Standard: RFC 7493 (The I-JSON Profile for Internet Protocols)</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed mb-3">
+            Standard RFC 8259 is deliberately permissive regarding encoding and key uniqueness. For robust machine-to-machine exchange, production systems adopt <strong class="text-white">I-JSON (Internet JSON)</strong>:
+          </p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+            <li><strong>Strict UTF-8 Encoding:</strong> Must be encoded exclusively in UTF-8 without Byte Order Mark (BOM). UTF-16 and UTF-32 are strictly rejected.</li>
+            <li><strong>No Duplicate Keys:</strong> Object keys MUST be strictly unique within the same object scope.</li>
+            <li><strong>IEEE 754 Precision Floor:</strong> Numbers must remain within the range of <code class="text-sky-300">[-(2^53)+1, (2^53)-1]</code> (double precision). Numbers outside this envelope must be serialized as strings.</li>
+            <li><strong>Binary Serialization:</strong> Binary data must be encoded using Base64 (RFC 4648 §4) or Base64url (RFC 4648 §5).</li>
+            <li><strong>Dates & Timestamps:</strong> Must conform strictly to ISO 8601 / RFC 3339 strings (e.g., <code class="text-emerald-300">"2026-10-15T08:00:00Z"</code>).</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: 8 DIALECTS, TYPES & VARIANTS        -->
+    <!-- ========================================== -->
+    <section id="tab-variants" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-400 text-xs font-semibold mb-2">
+            The Extended JSON Universe
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">8 Types, Dialects & Domain-Specific Schemas</h2>
+          <p class="text-slate-400 text-sm mt-1">Understanding when to use RFC 8259 vs JSON5 vs NDJSON vs GeoJSON vs JSON-LD in modern enterprise architectures.</p>
+        </div>
+
+        <!-- Dialects Accordion / Deep Dive Cards -->
+        <div class="space-y-6">
+
+          <!-- 1. Standard JSON -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-sky-950 text-sky-300 font-bold text-xs border border-sky-800">1. Standard JSON</span>
+                <h3 class="text-base font-bold text-white">RFC 8259 / ECMA-404</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Format: .json | MIME: application/json</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              The universal standard for REST APIs, microservices communication (gRPC-JSON gateway), and database state dumps. Enforces minimal syntax rules to guarantee deterministic cross-language parsing (C, Rust, Go, Python, Java, JS).
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                <div class="text-slate-400 mb-1">// Strict Syntax Specimen</div>
+                <div class="text-emerald-300 whitespace-pre">{\n  "service": "auth-gateway",\n  "port": 8443,\n  "tls": true,\n  "endpoints": ["/login", "/verify"]\n}</div>
+              </div>
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-slate-300 space-y-1">
+                <div class="text-sky-400 font-bold mb-1">// Characteristics & Trade-offs</div>
+                <div>• Zero runtime ambiguity across 50+ programming languages.</div>
+                <div>• Disallows comments, making human editing prone to syntax errors.</div>
+                <div>• Inefficient for real-time append-only streaming.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. JSON5 -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-amber-950 text-amber-300 font-bold text-xs border border-amber-800">2. JSON5</span>
+                <h3 class="text-base font-bold text-white">JSON for Humans (ECMAScript 5.1 Superset)</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Format: .json5 | MIME: application/json5</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              Designed specifically to alleviate the ergonomic pain points of configuration files. Allows single and multi-line comments, trailing commas, unquoted identifier keys, single-quoted strings, hex numbers (<code class="text-amber-300">0xCAFE</code>), leading/trailing decimal points (<code class="text-amber-300">.85</code>, <code class="text-amber-300">10.</code>), and IEEE specials (<code class="text-amber-300">Infinity</code>, <code class="text-amber-300">NaN</code>).
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                <div class="text-slate-400 mb-1">// Valid JSON5 Configuration</div>
+                <div class="text-amber-300 whitespace-pre">{<br>  // Development settings<br>  env: 'staging',<br>  timeout: 0xFF, /* 255ms */<br>  ratio: .75,<br>  features: ['auth', 'billing',], // trailing comma!<br>}</div>
+              </div>
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-slate-300 space-y-1">
+                <div class="text-amber-400 font-bold mb-1">// Adoption & Ecosystem</div>
+                <div>• Adopted by Webpack, Babel, ESLint, Next.js configs.</div>
+                <div>• Standard native <code class="text-slate-200">JSON.parse()</code> will FAIL on JSON5.</div>
+                <div>• Requires dedicated parser: <code class="text-slate-200">npm install json5</code> or <code class="text-slate-200">pip install json5</code>.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. JSONC -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-cyan-950 text-cyan-300 font-bold text-xs border border-cyan-800">3. JSONC</span>
+                <h3 class="text-base font-bold text-white">JSON with Comments (Microsoft / VS Code)</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Format: .jsonc | tsconfig.json, settings.json</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              A minimalist extension created by Microsoft for development tooling. Unlike JSON5, JSONC strictly preserves all RFC 8259 syntax constraints (double quotes required, NO trailing commas, NO unquoted keys), but permits C-style <code class="text-cyan-300">//</code> and <code class="text-cyan-300">/* */</code> comments.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                <div class="text-slate-400 mb-1">// VS Code tsconfig.json</div>
+                <div class="text-cyan-300 whitespace-pre">{<br>  /* Base compiler options */<br>  "compilerOptions": {<br>    "target": "ES2022", // Output target<br>    "strict": true<br>  }<br>}</div>
+              </div>
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-slate-300 space-y-1">
+                <div class="text-cyan-400 font-bold mb-1">// Critical Distinction</div>
+                <div>• Stripping comments from JSONC produces 100% valid RFC 8259 JSON.</div>
+                <div>• Used in VS Code settings, GitHub Actions config, and TypeScript.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. NDJSON / JSON Lines -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-indigo-950 text-indigo-300 font-bold text-xs border border-indigo-800">4. NDJSON / JSON Lines</span>
+                <h3 class="text-base font-bold text-white">Newline Delimited JSON (.jsonl)</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Format: .jsonl, .ndjson | MIME: application/x-ndjson</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              Each line is an autonomous, complete JSON document separated by a newline (<code class="text-indigo-300">\n</code> or <code class="text-indigo-300">\r\n</code>). Resolves the catastrophic memory bottleneck of standard JSON where multi-gigabyte files require loading the entire document into RAM to parse an outer array.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                <div class="text-slate-400 mb-1">// High-Throughput Stream Sample</div>
+                <div class="text-indigo-300 whitespace-pre">{"ts":17180001,"lvl":"INFO","ip":"10.0.0.1"}<br>{"ts":17180002,"lvl":"WARN","ip":"10.0.0.4"}<br>{"ts":17180003,"lvl":"ERR","ip":"10.0.0.9"}</div>
+              </div>
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-slate-300 space-y-1">
+                <div class="text-indigo-400 font-bold mb-1">// Enterprise Workloads</div>
+                <div>• Standard dataset format for LLM pre-training & SFT fine-tuning.</div>
+                <div>• Real-time log ingestion: Elasticsearch, Datadog, AWS CloudWatch.</div>
+                <div>• Stream processing with Apache Kafka and Spark.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. GeoJSON -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-teal-950 text-teal-300 font-bold text-xs border border-teal-800">5. GeoJSON</span>
+                <h3 class="text-base font-bold text-white">RFC 7946 Geospatial Data Standard</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Format: .geojson | WGS 84 Coordinate System</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              Standardized format encoding geographic vectors, features, and non-spatial attributes. Specifies geometries: <code class="text-teal-300">Point</code>, <code class="text-teal-300">LineString</code>, <code class="text-teal-300">Polygon</code>, <code class="text-teal-300">MultiPolygon</code>, and aggregates them into <code class="text-teal-300">FeatureCollection</code>.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs font-mono text-teal-300 overflow-x-auto">
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-122.4194, 37.7749] }, // [Longitude, Latitude]
+      "properties": { "city": "San Francisco", "state": "CA" }
+    }
+  ]
+}</div>
+          </div>
+
+          <!-- 6. JSON-LD -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-purple-950 text-purple-300 font-bold text-xs border border-purple-800">6. JSON-LD</span>
+                <h3 class="text-base font-bold text-white">Linked Data (W3C Recommendation)</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Format: .jsonld | MIME: application/ld+json</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              Enriches JSON with unambiguous global semantics by linking keys to URIs and RDF ontologies (Schema.org). Enables search engines and knowledge graphs to understand concepts rather than raw keys.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs font-mono text-purple-300 overflow-x-auto">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Antigravity",
+  "operatingSystem": "Cross-platform",
+  "applicationCategory": "DeveloperApplication",
+  "author": { "@type": "Organization", "name": "Google DeepMind" }
+}</div>
+          </div>
+
+          <!-- 7. JSON Schema -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-pink-950 text-pink-300 font-bold text-xs border border-pink-800">7. JSON Schema</span>
+                <h3 class="text-base font-bold text-white">The Structural Meta-Language (Draft 2020-12)</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Dialect: https://json-schema.org/draft/2020-12/schema</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              A declarative dialect for validating the format, types, patterns, and cardinality of JSON payloads. Forms the exact machine specification ingested by OpenAI Structured Outputs, FastSchema, and OpenAPI/Swagger.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs font-mono text-pink-300 overflow-x-auto">
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "user_id": { "type": "integer", "minimum": 1 },
+    "email": { "type": "string", "format": "email" },
+    "role": { "type": "string", "enum": ["ADMIN", "MEMBER", "GUEST"] }
+  },
+  "required": ["user_id", "email", "role"],
+  "additionalProperties": false // CRITICAL: blocks hallucinated keys!
+}</div>
+          </div>
+
+          <!-- 8. Binary JSON (BSON & CBOR) -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded bg-orange-950 text-orange-300 font-bold text-xs border border-orange-800">8. BSON & CBOR</span>
+                <h3 class="text-base font-bold text-white">Binary Serialized Encodings</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">BSON (MongoDB) | CBOR (RFC 8949)</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              Binary representations that eliminate text parsing overhead and expand JSON's primitive type limits. Adds native support for 64-bit integers (<code class="text-orange-300">int64</code>), UTC Timestamps, 128-bit IEEE 754-2008 Decimals (<code class="text-orange-300">Decimal128</code>), raw binary buffers (<code class="text-orange-300">BinData</code>), and regex objects.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs text-slate-300">
+              <strong class="text-orange-400">Why Not JSON?</strong> Standard JSON strings must parse character-by-character. BSON prefixes all objects and strings with an explicit 4-byte little-endian length integer, allowing databases to skip unneeded fields in $O(1)$ time without scanning bytes.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Comparative Matrix Table -->
+        <h3 class="text-lg font-bold text-white mt-10 mb-4 flex items-center gap-2">
+          <span>Comparative Dialect Selection Matrix</span>
+        </h3>
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-800 text-slate-200">
+              <tr>
+                <th class="p-3">Dialect</th>
+                <th class="p-3">Primary Use Case</th>
+                <th class="p-3">Comments?</th>
+                <th class="p-3">Trailing Commas?</th>
+                <th class="p-3">Streaming Friendly?</th>
+                <th class="p-3">Parse Speed</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950 text-slate-300">
+              <tr>
+                <td class="p-3 font-bold text-sky-400">Standard JSON</td>
+                <td class="p-3">REST APIs, Web Contracts</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ Strictly No</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ Strictly No</td>
+                <td class="p-3 text-amber-400">Poor (Requires full tree)</td>
+                <td class="p-3 text-emerald-400 font-bold">Very Fast (SIMD-accelerated)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-amber-400">JSON5</td>
+                <td class="p-3">Human Developer Configurations</td>
+                <td class="p-3 text-emerald-400 font-semibold">✓ Line & Block</td>
+                <td class="p-3 text-emerald-400 font-semibold">✓ Supported</td>
+                <td class="p-3 text-rose-400">No</td>
+                <td class="p-3 text-amber-400">Moderate (Custom tokenizer)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-cyan-400">JSONC</td>
+                <td class="p-3">VS Code, TypeScript Configs</td>
+                <td class="p-3 text-emerald-400 font-semibold">✓ Line & Block</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ Strictly No</td>
+                <td class="p-3 text-rose-400">No</td>
+                <td class="p-3 text-emerald-400">Fast (Strip comments to RFC)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-indigo-400">NDJSON (.jsonl)</td>
+                <td class="p-3">Big Data, LLM Datasets, Logs</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ No</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ No</td>
+                <td class="p-3 text-emerald-400 font-bold">✓ Best (Line-by-line)</td>
+                <td class="p-3 text-emerald-400 font-bold">Ultra-Fast (Zero-alloc streaming)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-teal-400">GeoJSON</td>
+                <td class="p-3">GIS, Maps, PostGIS spatial queries</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ No</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ No</td>
+                <td class="p-3 text-amber-400">Moderate</td>
+                <td class="p-3 text-emerald-400">Fast</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-purple-400">JSON-LD</td>
+                <td class="p-3">Search Engines, Knowledge Graphs</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ No</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ No</td>
+                <td class="p-3 text-rose-400">No</td>
+                <td class="p-3 text-amber-400">Moderate (URI expansions)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-orange-400">BSON / CBOR</td>
+                <td class="p-3">Databases (MongoDB), IoT Telemetry</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ No</td>
+                <td class="p-3 text-rose-400 font-semibold">✕ N/A (Binary)</td>
+                <td class="p-3 text-emerald-400 font-semibold">✓ High (Frame-based)</td>
+                <td class="p-3 text-emerald-300 font-extrabold">Instant (Zero-copy binary reads)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: HALLUCINATIONS IN JSON             -->
+    <!-- ========================================== -->
+    <section id="tab-hallucination" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-400/30 text-rose-400 text-xs font-semibold mb-2">
+            LLM Auto-Regressive Mechanics
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">The Anatomy of LLM JSON Hallucinations</h2>
+          <p class="text-slate-400 text-sm mt-1">Why probabilistic neural networks fail at deterministic syntax and how errors manifest.</p>
+        </div>
+
+        <!-- Tokenizer & BPE Failure Mechanics -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-8">
+          <h3 class="text-base font-bold text-rose-400 mb-3 flex items-center gap-2">
+            <span>The Root Cause: BPE Tokenization Misalignment & Auto-Regressive Blindness</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed mb-4">
+            LLMs do not emit letters; they predict probability distributions over Byte Pair Encoding (BPE) tokens. This introduces fundamental friction with JSON:
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+              <strong class="text-sky-400 block mb-1">1. Token Boundary Fragmentation</strong>
+              <p class="text-slate-400 leading-relaxed">
+                In BPE tokenizers (tiktoken, SentencePiece), <code class="text-amber-300">{"</code>, <code class="text-amber-300">{</code>, and <code class="text-amber-300">{\n  "</code> are distinct tokens. If the model samples the wrong whitespace token, it often slips into an irrecoverable syntax trap.
+              </p>
+            </div>
+            <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+              <strong class="text-emerald-400 block mb-1">2. No Backtracking (No Lookahead)</strong>
+              <p class="text-slate-400 leading-relaxed">
+                Humans write code by planning ahead or revising. An LLM commits to token <code class="text-emerald-300">t<sub>100</sub></code> before knowing if it has enough output token budget left to balance the 5 nested closing braces at token <code class="text-emerald-300">t<sub>4096</sub></code>.
+              </p>
+            </div>
+            <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+              <strong class="text-purple-400 block mb-1">3. RLHF Conversational Bias</strong>
+              <p class="text-slate-400 leading-relaxed">
+                Chat-aligned models are heavily penalized during training if they don't produce friendly natural conversational phrasing. This triggers unwanted preambles like <em>"Here is your JSON response:"</em>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- The 3 Tiers Detailed -->
+        <div class="space-y-6">
+
+          <!-- Tier 1: Syntactic Hallucinations -->
+          <div class="bg-slate-950 border border-rose-500/30 rounded-xl p-5">
+            <h3 class="text-base font-bold text-rose-400 mb-2 flex items-center gap-2">
+              <span class="w-6 h-6 rounded bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs">1</span>
+              <span>Syntactic Hallucinations (Fatal Grammar Breaks)</span>
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              These cause instant runtime crashes in standard parsers (<code class="text-rose-300">JSON.parse()</code>, <code class="text-rose-300">json.loads()</code>, <code class="text-rose-300">serde_json</code>).
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="bg-slate-900 p-3.5 rounded-lg border border-slate-800 flex flex-col justify-between">
+                <div>
+                  <div class="text-rose-400 font-bold mb-2">✕ Malformed LLM Output</div>
+                  <pre class="bg-black/60 p-3 rounded border border-slate-800 text-rose-300 text-xs font-mono overflow-x-auto leading-relaxed">```json
+{
+  'user': 'Alex',
+  "roles": ["dev", "lead",],
+  "active": True,
+  "bio": "He said "Ready" now"
+// Premature EOF (token limit hit)</pre>
+                </div>
+              </div>
+              <div class="bg-slate-900 p-3.5 rounded-lg border border-slate-800 text-slate-300 space-y-1.5 font-sans">
+                <div class="text-rose-300 font-bold font-mono">// Concrete Defects:</div>
+                <div>• <strong>Markdown Fence Wrapping:</strong> Output wrapped in <code class="text-rose-300">```json</code> prevents direct pipe ingestion.</div>
+                <div>• <strong>Python Bleed:</strong> Emits <code class="text-rose-300">'user'</code> (single quotes) and <code class="text-rose-300">True</code> / <code class="text-rose-300">None</code>.</div>
+                <div>• <strong>Trailing Commas:</strong> Adding <code class="text-rose-300">,</code> after <code class="text-rose-300">"lead"</code>.</div>
+                <div>• <strong>Unescaped Quotes:</strong> Nested quotes in string crash string state machine.</div>
+                <div>• <strong>Truncated Brackets:</strong> Max tokens exhausted before emitting <code class="text-rose-300">}</code>.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tier 2: Schema Hallucinations -->
+          <div class="bg-slate-950 border border-amber-500/30 rounded-xl p-5">
+            <h3 class="text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
+              <span class="w-6 h-6 rounded bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs">2</span>
+              <span>Schema & Contract Hallucinations (Contract Deviations)</span>
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              The JSON parses cleanly as text, but violently violates the API contract or data model validation rules.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="bg-slate-900 p-3.5 rounded-lg border border-slate-800 flex flex-col justify-between">
+                <div>
+                  <div class="text-amber-400 font-bold mb-2">✕ Schema Violation Specimen</div>
+                  <pre class="bg-black/60 p-3 rounded border border-slate-800 text-amber-300 text-xs font-mono overflow-x-auto leading-relaxed">{
+  "user_id": "10492",
+  "status": "in_review",
+  "notes": "Generated by AI"
+}</pre>
+                </div>
+                <div class="text-[11px] text-amber-400/90 font-mono mt-2 pt-2 border-t border-slate-800">
+                  Expected schema requires integer <code>user_id</code>, enum <code>"PENDING"</code>, and mandatory <code>"email"</code>.
+                </div>
+              </div>
+              <div class="bg-slate-900 p-3.5 rounded-lg border border-slate-800 text-slate-300 space-y-1.5 font-sans">
+                <div class="text-amber-300 font-bold font-mono">// Concrete Defects:</div>
+                <div>• <strong>Invented Fields:</strong> Model injects unsolicited keys (<code class="text-amber-300">"notes"</code>, <code class="text-amber-300">"meta"</code>).</div>
+                <div>• <strong>Enum Inversion:</strong> Generates plausible synonyms (<code class="text-amber-300">"in_review"</code>) instead of allowed contract literal (<code class="text-amber-300">"PENDING"</code>).</div>
+                <div>• <strong>Type Coercion Failures:</strong> Emits numeric strings (<code class="text-amber-300">"10492"</code>) instead of scalar integers (<code class="text-emerald-300">10492</code>).</div>
+                <div>• <strong>Missing Fields:</strong> Model silently drops required fields like <code class="text-amber-300">"email"</code> when source document is vague.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tier 3: Factual & Semantic Hallucinations -->
+          <div class="bg-slate-950 border border-purple-500/30 rounded-xl p-5">
+            <h3 class="text-base font-bold text-purple-400 mb-2 flex items-center gap-2">
+              <span class="w-6 h-6 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs">3</span>
+              <span>Factual & Semantic Hallucinations (Silent Data Corruption)</span>
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              The most dangerous failure: The JSON syntax is pristine, the schema validates with 0 errors, but the actual data values are confabulated, mathematically invalid, or dangerous.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div class="bg-slate-900 p-3.5 rounded-lg border border-slate-800 flex flex-col justify-between">
+                <div>
+                  <div class="text-purple-400 font-bold mb-2">✕ Semantic Corruption Specimen</div>
+                  <pre class="bg-black/60 p-3 rounded border border-slate-800 text-purple-300 text-xs font-mono overflow-x-auto leading-relaxed">{
+  "invoice_id": "INV-99201",
+  "subtotal": 100.00,
+  "tax_rate": 0.08,
+  "total": 125.00,
+  "support_url": "https://company.com/bogus"
+}</pre>
+                </div>
+                <div class="text-[11px] text-purple-400/90 font-mono mt-2 pt-2 border-t border-slate-800">
+                  Math hallucination: 100.00 + (100.00 * 0.08) = 108.00, not 125.00. URL is fabricated 404.
+                </div>
+              </div>
+              <div class="bg-slate-900 p-3.5 rounded-lg border border-slate-800 text-slate-300 space-y-1.5 font-sans">
+                <div class="text-purple-300 font-bold font-mono">// Concrete Defects:</div>
+                <div>• <strong>Ghost Identifiers:</strong> Fabricating realistic looking UUIDs (<code class="text-purple-300">INV-99201</code>) not present in source text.</div>
+                <div>• <strong>Arithmetic Contradictions:</strong> Math failures between fields (<code class="text-purple-300">total: 125.00</code> instead of <code class="text-emerald-300">108.00</code>).</div>
+                <div>• <strong>False Certainty Syndrome:</strong> When data is missing, the model invents a plausible guess instead of assigning <code class="text-purple-300">null</code>.</div>
+                <div>• <strong>Fictitious URLs:</strong> Fabricating non-existent endpoints or citation links.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: 5-TIER MITIGATION ARCHITECTURE      -->
+    <!-- ========================================== -->
+    <section id="tab-mitigation" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 text-xs font-semibold mb-2">
+            Engineering Defense-in-Depth
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Production Mitigation Architecture & Code</h2>
+          <p class="text-slate-400 text-sm mt-1">Full implementations across logit grammar masking, Pydantic V2, Zod, and resilient self-healing loops.</p>
+        </div>
+
+        <!-- Architecture Flow -->
+        <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl mb-6">
+          <div class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2">The 5-Tier Production Pipeline Flow</div>
+          <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+            <span class="px-2.5 py-1 rounded bg-sky-950 text-sky-300 border border-sky-800">1. Constrained Decoding</span>
+            <span class="text-slate-500">➔</span>
+            <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">2. Schema Contract Validation</span>
+            <span class="text-slate-500">➔</span>
+            <span class="px-2.5 py-1 rounded bg-purple-950 text-purple-300 border border-purple-800">3. Heuristic Repair Fallback</span>
+            <span class="text-slate-500">➔</span>
+            <span class="px-2.5 py-1 rounded bg-amber-950 text-amber-300 border border-amber-800">4. Diagnostic Reflection Retry</span>
+            <span class="text-slate-500">➔</span>
+            <span class="px-2.5 py-1 rounded bg-teal-950 text-teal-300 border border-teal-800">5. Certified DB Insert</span>
+          </div>
+        </div>
+
+        <!-- Implementation Code Tabs -->
+        <div class="space-y-6">
+
+          <!-- Implementation 1: OpenAI Structured Outputs & Outlines -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                <span>Tier 1 Code: Constrained Decoding (OpenAI Structured Outputs / Outlines)</span>
+              </h3>
+              <span class="text-xs bg-sky-950 text-sky-300 px-2 py-0.5 rounded border border-sky-800">Grammar Logit Masking</span>
+            </div>
+            <p class="text-xs text-slate-300 mb-3">
+              Forces the inference engine to construct a Deterministic Finite Automaton (DFA). At every token step, tokens that do not match the JSON Schema receive a logit mask of <code class="text-sky-300">-Infinity</code>.
+            </p>
+            <pre class="bg-black/70 p-4 rounded-lg text-xs font-mono text-sky-300 overflow-x-auto border border-slate-800">
+import openai
+from pydantic import BaseModel, Field
+
+client = openai.OpenAI()
+
+class UserExtraction(BaseModel):
+    user_id: int = Field(description="Unique integer user identifier")
+    name: str = Field(description="Full name of the user")
+    email: str = Field(description="Verified corporate email address")
+    roles: list[str] = Field(description="Assigned role permissions")
+
+# 100% Guaranteed Syntax & Schema adherence at the logit level:
+completion = client.beta.chat.completions.parse(
+    model="gpt-4o-2024-08-06",
+    messages=[
+        {"role": "system", "content": "Extract structured user information."},
+        {"role": "user", "content": "Onboard Alice Smith (asmith@corp.internal) as Lead Developer."},
+    ],
+    response_format=UserExtraction, # Strict schema enforcement
+    temperature=0.0
+)
+
+data: UserExtraction = completion.choices[0].message.parsed
+print(data.model_dump_json(indent=2))</pre>
+          </div>
+
+          <!-- Implementation 2: Pydantic V2 Strict Contract Enforcement -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                <span>Tier 2 Code: Pydantic V2 Strict Model (Python)</span>
+              </h3>
+              <span class="text-xs bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">Schema Integrity</span>
+            </div>
+            <p class="text-xs text-slate-300 mb-3">
+              Notice <code class="text-emerald-300">extra='forbid'</code>. This immediately raises a <code class="text-rose-300">ValidationError</code> if the LLM hallucinates unsolicited keys.
+            </p>
+            <pre class="bg-black/70 p-4 rounded-lg text-xs font-mono text-emerald-300 overflow-x-auto border border-slate-800">
+from pydantic import BaseModel, Field, field_validator, ConfigDict
+from typing import Optional, Literal
+from decimal import Decimal
+
+class EnterpriseOrderContract(BaseModel):
+    # CRITICAL: Forbid any hallucinated keys not explicitly declared
+    model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
+
+    order_id: str = Field(pattern=r"^ORD-[0-9]{6}$", description="Format: ORD-XXXXXX")
+    customer_id: int = Field(gt=0, description="Positive customer database ID")
+    status: Literal["PENDING", "APPROVED", "FULFILLED", "CANCELLED"]
+    unit_price: Decimal = Field(gt=0, max_digits=10, decimal_places=2)
+    quantity: int = Field(ge=1, le=1000)
+    discount_rate: Optional[Decimal] = Field(default=None, ge=0, le=1)
+
+    @field_validator('status')
+    @classmethod
+    def validate_status(cls, v: str) -> str:
+        # Enforce exact case normalization
+        return v.upper()</pre>
+          </div>
+
+          <!-- Implementation 3: TypeScript Zod Schema Contract -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
+                <span>Tier 2 Code: TypeScript Zod Strict Contract</span>
+              </h3>
+              <span class="text-xs bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded border border-cyan-800">Client/Server Gate</span>
+            </div>
+            <pre class="bg-black/70 p-4 rounded-lg text-xs font-mono text-cyan-300 overflow-x-auto border border-slate-800">
+import { z } from "zod";
+
+// .strict() instantly rejects any extra keys injected by the model
+export const InvoiceSchema = z.object({
+  invoiceNumber: z.string().regex(/^INV-\d{4}-\d{4}$/, "Must match INV-YYYY-XXXX"),
+  totalAmount: z.number().positive("Must be a positive currency amount"),
+  currency: z.enum(["USD", "EUR", "GBP"]),
+  isTaxExempt: z.boolean(),
+  notes: z.string().nullable().optional(),
+}).strict();
+
+export type Invoice = z.infer&lt;typeof InvoiceSchema&gt;;
+
+export function parseAndValidateLLMJson(rawOutput: string): Invoice {
+  // Strip code fences if present
+  const cleaned = rawOutput.replace(/```(?:json)?|```/g, "").trim();
+  const rawObj = JSON.parse(cleaned);
+  return InvoiceSchema.parse(rawObj); // Throws detailed ZodError on failure
+}</pre>
+          </div>
+
+          <!-- Implementation 4: Closed-Loop Self-Healing Retry Loop -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                <span>Tier 3 Code: Closed-Loop Error Reflection & Self-Healing (Python)</span>
+              </h3>
+              <span class="text-xs bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-800">Dynamic Recovery</span>
+            </div>
+            <pre class="bg-black/70 p-4 rounded-lg text-xs font-mono text-amber-300 overflow-x-auto border border-slate-800">
+import json
+from jsonrepair import repair_json
+from pydantic import ValidationError
+
+def extract_with_self_healing(llm_client, model: str, prompt: str, schema_cls, max_retries: int = 3):
+    messages = [
+        {"role": "system", "content": f"Extract data strictly conforming to schema:\n{schema_cls.model_json_schema()}"},
+        {"role": "user", "content": prompt}
+    ]
+
+    for attempt in range(1, max_retries + 1):
+        response = llm_client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=0.0
+        )
+        raw_text = response.choices[0].message.content
+
+        # Phase 1: Fast Heuristic Repair (Catches 80% of syntax errors without retry cost)
+        try:
+            repaired_text = repair_json(raw_text)
+            parsed_dict = json.loads(repaired_text)
+            validated_obj = schema_cls.model_validate(parsed_dict)
+            return validated_obj # Success!
+        except (json.JSONDecodeError, ValidationError) as err:
+            if attempt == max_retries:
+                raise RuntimeError(f"Failed after {max_retries} attempts: {err}")
+
+            # Phase 2: Feed the exact diagnostic error trace back to the LLM
+            messages.append({"role": "assistant", "content": raw_text})
+            messages.append({
+                "role": "user",
+                "content": f"VALIDATION ERROR:\n{str(err)}\n\nPlease correct the error and return ONLY valid RFC 8259 JSON."
+            })</pre>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: BATTLE-TESTED PRODUCTION PROMPTS    -->
+    <!-- ========================================== -->
+    <section id="tab-prompts" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-400 text-xs font-semibold mb-2">
+            Engineered Prompt Catalog
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Production Anti-Hallucination Prompts</h2>
+          <p class="text-slate-400 text-sm mt-1">Calibrated prompt designs that eradicate conversational preambles, enforce schema fidelity, and prevent factual fabrications.</p>
+        </div>
+
+        <div class="space-y-6">
+
+          <!-- Prompt 1: Strict Zero-Tolerance Extractor -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-sky-400">1. The Zero-Tolerance Syntactic & Schema Guard</h3>
+                <p class="text-xs text-slate-400">Forces immediate, raw JSON parsing without conversational filler or markdown code fences.</p>
+              </div>
+              <button onclick="copyToClipboard('prompt-1', this)" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium transition flex items-center gap-1.5 shadow">
+                <span>Copy Prompt</span>
+              </button>
+            </div>
+            <pre id="prompt-1" class="bg-black/60 p-4 rounded-lg text-xs font-mono text-slate-200 overflow-x-auto whitespace-pre-wrap leading-relaxed border border-slate-800">You are a deterministic, zero-hallucination data serialization engine. You must output ONLY a valid RFC 8259 JSON document conforming strictly to the schema provided below.
+
+CRITICAL INSTRUCTIONS:
+1. RAW OUTPUT ONLY: Do NOT output markdown code fences (```json or ```). Start your response directly with the opening character '{' or '[' and terminate directly with '}' or ']'.
+2. NO CHATTER: Never include polite preamble, introductory notes, or closing comments (e.g., "Certainly, here is the JSON").
+3. SYNTACTIC INTEGRITY:
+   - All object keys and string values must be enclosed in double quotes (""). Single quotes are strictly forbidden.
+   - Never output trailing commas after the last item of an object or array.
+   - Use lowercase true, false, and null. Never use Python literals (True, False, None).
+4. SCHEMA ADHERENCE:
+   - Output ONLY the keys explicitly defined in the schema. Do NOT invent new keys, metadata, notes, or explanations.
+   - If a specific field cannot be substantiated with absolute certainty from the source input, assign it strictly to null. NEVER fabricate a value.
+
+SCHEMA:
+{target_json_schema}
+
+INPUT DOCUMENT:
+{input_text}</pre>
+          </div>
+
+          <!-- Prompt 2: Reasoning Scratchpad + Envelope Pattern -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-emerald-400">2. The CoT Scratchpad + JSON Envelope Pattern</h3>
+                <p class="text-xs text-slate-400">Allows internal reasoning to prevent mathematical or logical hallucinations before generating JSON.</p>
+              </div>
+              <button onclick="copyToClipboard('prompt-2', this)" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition flex items-center gap-1.5 shadow">
+                <span>Copy Prompt</span>
+              </button>
+            </div>
+            <pre id="prompt-2" class="bg-black/60 p-4 rounded-lg text-xs font-mono text-slate-200 overflow-x-auto whitespace-pre-wrap leading-relaxed border border-slate-800">You are an expert financial analyst. Analyze the following financial filing and extract key figures into structured JSON.
+
+EXECUTION PROTOCOL:
+Step 1: In a &lt;scratchpad&gt; block, perform step-by-step reasoning. Extract raw quotes, convert currencies, perform necessary math calculations, and verify date bounds.
+Step 2: In a &lt;json_payload&gt; block, output ONLY the final, validated RFC 8259 JSON object.
+
+RULES FOR &lt;json_payload&gt;:
+- Contains ONLY valid JSON without markdown code fences.
+- All numbers must be rounded to 2 decimal places.
+- Every extracted figure must correspond to a verifiable sentence in the source text.
+- If an entity is not found, its value must be null.
+
+TARGET SCHEMA:
+{
+  "company_name": "string",
+  "fiscal_quarter": "string (e.g. Q3 2026)",
+  "total_revenue_millions": "number or null",
+  "operating_margin_pct": "number or null",
+  "key_risks": ["array of exact strings"]
+}
+
+DOCUMENT:
+{financial_document}</pre>
+          </div>
+
+          <!-- Prompt 3: Dual Exemplar Few-Shot Prompt -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-purple-400">3. Dual Exemplar (Positive vs. Negative Counter-Examples)</h3>
+                <p class="text-xs text-slate-400">Teaches the model what NOT to do by contrasting common hallucination errors against compliant output.</p>
+              </div>
+              <button onclick="copyToClipboard('prompt-3', this)" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium transition flex items-center gap-1.5 shadow">
+                <span>Copy Prompt</span>
+              </button>
+            </div>
+            <pre id="prompt-3" class="bg-black/60 p-4 rounded-lg text-xs font-mono text-slate-200 overflow-x-auto whitespace-pre-wrap leading-relaxed border border-slate-800">Task: Extract patient medication alerts from the clinical summary.
+
+---
+[NEGATIVE EXAMPLE - COMMON ERRORS TO AVOID]:
+Input: "Patient reports mild rash after taking Amoxicillin 500mg twice daily."
+Incorrect Output:
+Sure, here is the clinical JSON:
+```json
+{
+  'medication': 'Amoxicillin',
+  'dose_mg': '500',  // ERROR: String instead of integer
+  'frequency': 'BID',
+  'notes': 'Patient had a rash',  // ERROR: Invented key 'notes'
+  'severity': 'mild',
+}  // ERROR: Trailing comma, single quotes, chat preamble
+```
+
+---
+[POSITIVE EXAMPLE - STRICTLY EMULATE THIS PATTERN]:
+Input: "Patient reports mild rash after taking Amoxicillin 500mg twice daily."
+Compliant Output:
+{"medication_name":"Amoxicillin","dosage_mg":500,"frequency_per_day":2,"adverse_reaction":"mild rash","confirmed":true}
+
+---
+Now extract the following clinical record with the exact syntax and cleanliness of the positive example:
+Input: {clinical_record}</pre>
+          </div>
+
+          <!-- Prompt 4: Diagnostic Reflection & Error Correction -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-amber-400">4. Automated Error Reflection & Repair Loop Prompt</h3>
+                <p class="text-xs text-slate-400">Directly fed into retry loops when a schema validator or parser fails at runtime.</p>
+              </div>
+              <button onclick="copyToClipboard('prompt-4', this)" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium transition flex items-center gap-1.5 shadow">
+                <span>Copy Prompt</span>
+              </button>
+            </div>
+            <pre id="prompt-4" class="bg-black/60 p-4 rounded-lg text-xs font-mono text-slate-200 overflow-x-auto whitespace-pre-wrap leading-relaxed border border-slate-800">ATTENTION: Your previous JSON output failed automated server validation and crashed the parser.
+
+MALFORMED ATTEMPT:
+{previous_raw_output}
+
+PARSER DIAGNOSTIC ERROR:
+{validation_error_message}
+
+MANDATORY REPAIR STEPS:
+1. Locate the exact character or line position reported in the error.
+2. Fix all syntactic violations (e.g., replace single quotes with double quotes, eliminate trailing commas, close unclosed brackets).
+3. If an extra key was rejected by the schema, remove it entirely.
+4. If a type failed (e.g., string passed where integer was required), cast it to the correct type.
+5. Return ONLY the repaired, valid RFC 8259 JSON starting with { and ending with }.</pre>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 6: INTERACTIVE PLAYGROUND              -->
+    <!-- ========================================== -->
+    <section id="tab-playground" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/30 text-indigo-400 text-xs font-semibold mb-2">
+            Interactive Test Suite
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Live JSON Validator & Heuristic Repair Tool</h2>
+          <p class="text-slate-400 text-sm mt-1">Test real-world LLM hallucination samples, diagnose syntactic breakdowns, and execute heuristic repair algorithms.</p>
+        </div>
+
+        <!-- Sample Defect Buttons -->
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-slate-400 font-semibold mr-1">Load Preset Defect:</span>
+          <button onclick="loadSample('markdown')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Markdown & Chat Wrapper</button>
+          <button onclick="loadSample('trailing')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Trailing Commas</button>
+          <button onclick="loadSample('singlequotes')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Python Single Quotes & True</button>
+          <button onclick="loadSample('unclosed')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Truncated Unclosed Braces</button>
+          <button onclick="loadSample('clean')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 transition">Valid RFC 8259</button>
+        </div>
+
+        <!-- Editor & Results Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+          
+          <!-- Input Area -->
+          <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+              <label for="json-input" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Raw LLM Output Stream</label>
+              <button onclick="formatInput()" class="text-xs text-sky-400 hover:underline">Beautify / Indent</button>
+            </div>
+            <textarea id="json-input" rows="16" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 font-mono text-xs text-slate-200 focus:outline-none focus:border-sky-500 leading-relaxed resize-y" placeholder="Paste potentially malformed JSON here..."></textarea>
+            
+            <div class="flex items-center gap-3 mt-4">
+              <button onclick="validateJson()" class="px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition shadow-lg shadow-sky-600/20">
+                1. Validate JSON
+              </button>
+              <button onclick="autoRepairJson()" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition shadow-lg shadow-purple-600/20">
+                2. Auto-Repair Hallucinations
+              </button>
+              <button onclick="clearPlayground()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition ml-auto">
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Diagnostic & Repair Output Area -->
+          <div class="flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Diagnostic Analysis & Repaired Tree</span>
+              <span id="status-badge" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium">Ready</span>
+            </div>
+            
+            <div id="diagnostic-box" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs overflow-y-auto min-h-[350px]">
+              <div class="text-slate-500 italic">Run validation or select a preset defect above to see runtime parser diagnostics and automated repairs...</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 7: INTERACTIVE SCHEMA & PROMPT SYNTHESIZER -->
+    <!-- ========================================== -->
+    <section id="tab-synthesizer" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-400 text-xs font-semibold mb-2">
+            Automated Code & Prompt Generator
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Interactive Schema & Prompt Synthesizer</h2>
+          <p class="text-slate-400 text-sm mt-1">Paste any sample JSON object below. The engine will instantly synthesize strict JSON Schema, Pydantic V2 models, TypeScript Zod contracts, and calibrated system prompts.</p>
+        </div>
+
+        <!-- Sample Buttons -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="text-xs text-slate-400 font-semibold mr-1">Load Preset Entity:</span>
+          <button onclick="loadSynthPreset('ecommerce')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">E-Commerce Order</button>
+          <button onclick="loadSynthPreset('clinical')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Clinical Patient Note</button>
+          <button onclick="loadSynthPreset('financial')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Financial Analysis</button>
+          <button onclick="loadSynthPreset('user')" class="px-3 py-1 rounded-md text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">SaaS User Profile</button>
+        </div>
+
+        <!-- Synthesizer Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Input Column -->
+          <div class="flex flex-col">
+            <label for="synth-input" class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Input Sample JSON Object</label>
+            <textarea id="synth-input" rows="18" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 font-mono text-xs text-slate-200 focus:outline-none focus:border-amber-500 leading-relaxed resize-y" placeholder="Paste your target JSON object here..."></textarea>
+            
+            <button onclick="synthesizeArtifacts()" class="mt-4 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs transition shadow-lg shadow-amber-600/20 flex items-center justify-center gap-2">
+              <span>⚡ Synthesize All Production Artifacts</span>
+            </button>
+          </div>
+
+          <!-- Output Column with Sub-tabs -->
+          <div class="flex flex-col bg-slate-950 border border-slate-800 rounded-xl p-4 min-h-[450px]">
+            <!-- Sub-tab Navigation -->
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-3">
+              <div class="flex items-center gap-1.5 text-xs font-mono">
+                <button onclick="switchSynthSubTab('synth-jsonschema')" id="btn-synth-jsonschema" class="px-3 py-1 rounded-md subtab-active transition">JSON Schema</button>
+                <button onclick="switchSynthSubTab('synth-pydantic')" id="btn-synth-pydantic" class="px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition">Pydantic V2</button>
+                <button onclick="switchSynthSubTab('synth-zod')" id="btn-synth-zod" class="px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition">Zod TS</button>
+                <button onclick="switchSynthSubTab('synth-prompt')" id="btn-synth-prompt" class="px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition">Prompt</button>
+              </div>
+              <button onclick="copyActiveSynthTab()" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs text-emerald-400 font-mono transition flex items-center gap-1">
+                <span>📋 Copy</span>
+              </button>
+            </div>
+
+            <!-- Subtab Content Panes -->
+            <div class="flex-1 overflow-y-auto">
+              <pre id="synth-jsonschema" class="synth-pane text-xs font-mono text-pink-300 whitespace-pre-wrap leading-relaxed">// Click "Synthesize All Production Artifacts" to generate strict Draft 2020-12 Schema...</pre>
+              <pre id="synth-pydantic" class="synth-pane hidden text-xs font-mono text-emerald-300 whitespace-pre-wrap leading-relaxed">// Pydantic V2 model will appear here...</pre>
+              <pre id="synth-zod" class="synth-pane hidden text-xs font-mono text-cyan-300 whitespace-pre-wrap leading-relaxed">// Zod TypeScript schema will appear here...</pre>
+              <pre id="synth-prompt" class="synth-pane hidden text-xs font-mono text-amber-200 whitespace-pre-wrap leading-relaxed">// Hardened anti-hallucination system prompt will appear here...</pre>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 8: MULTI-MODEL AI SDK CHEATSHEET       -->
+    <!-- ========================================== -->
+    <section id="tab-sdks" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-400 text-xs font-semibold mb-2">
+            The Modern AI Stack
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Multi-Model LLM SDK Integration Cheatsheet</h2>
+          <p class="text-slate-400 text-sm mt-1">Battle-tested implementations enforcing structured JSON outputs across OpenAI, Google Gemini, Anthropic Claude, Instructor, and LangChain.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- 1. Google Gemini SDK -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-sky-400">1. Google Gemini Python SDK</h3>
+              <span class="text-xs bg-sky-950 text-sky-300 px-2 py-0.5 rounded border border-sky-800">Native Schema Gate</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-3">Uses Gemini's native <code class="text-sky-300">response_schema</code> configuration for zero-hallucination structured decoding:</p>
+            <pre class="bg-black/60 p-3 rounded-lg text-xs font-mono text-sky-300 overflow-x-auto border border-slate-800">
+import google.generativeai as genai
+from pydantic import BaseModel, Field
+
+class AnalysisReport(BaseModel):
+    sentiment: str = Field(description="POSITIVE or NEGATIVE")
+    score: float = Field(ge=0.0, le=1.0)
+    key_phrases: list[str]
+
+genai.configure(api_key="GEMINI_API_KEY")
+
+model = genai.GenerativeModel(
+    "gemini-1.5-pro",
+    generation_config={
+        "response_mime_type": "application/json",
+        "response_schema": AnalysisReport,
+        "temperature": 0.0
+    }
+)
+
+response = model.generate_content("Analyze user feedback...")
+print(response.text) # 100% Guaranteed AnalysisReport JSON</pre>
+          </div>
+
+          <!-- 2. OpenAI Structured Outputs -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-emerald-400">2. OpenAI Structured Outputs</h3>
+              <span class="text-xs bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">DFA Logit Mask</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-3">Uses <code class="text-emerald-300">beta.chat.completions.parse</code> to guarantee strict schema conformance:</p>
+            <pre class="bg-black/60 p-3 rounded-lg text-xs font-mono text-emerald-300 overflow-x-auto border border-slate-800">
+from openai import OpenAI
+from pydantic import BaseModel
+
+client = OpenAI()
+
+class ExtractedEntities(BaseModel):
+    organization: str
+    founded_year: int
+    headquarters: str
+
+completion = client.beta.chat.completions.parse(
+    model="gpt-4o-2024-08-06",
+    messages=[
+        {"role": "system", "content": "Extract corporate information."},
+        {"role": "user", "content": "Google DeepMind was founded in 2010 in London."}
+    ],
+    response_format=ExtractedEntities,
+    temperature=0.0
+)
+
+data: ExtractedEntities = completion.choices[0].message.parsed
+print(data.model_dump())</pre>
+          </div>
+
+          <!-- 3. Anthropic Claude Tool Calling Trick -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-amber-400">3. Anthropic Claude (Tool Choice Enforcement)</h3>
+              <span class="text-xs bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-800">Tool Gating</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-3">Forces Claude to invoke a specific tool function containing your target JSON Schema:</p>
+            <pre class="bg-black/60 p-3 rounded-lg text-xs font-mono text-amber-300 overflow-x-auto border border-slate-800">
+import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    temperature=0.0,
+    tools=[{
+        "name": "export_ticket",
+        "description": "Export parsed support ticket",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "ticket_id": {"type": "string"},
+                "priority": {"type": "string", "enum": ["P0", "P1", "P2"]}
+            },
+            "required": ["ticket_id", "priority"]
+        }
+    }],
+    tool_choice={"type": "tool", "name": "export_ticket"},
+    messages=[{"role": "user", "content": "Incident INC-882: Database down"}]
+)
+
+ticket_json = response.content[0].input
+print(ticket_json)</pre>
+          </div>
+
+          <!-- 4. Instructor Library -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-purple-400">4. Instructor (Industry Standard Wrapper)</h3>
+              <span class="text-xs bg-purple-950 text-purple-300 px-2 py-0.5 rounded border border-purple-800">Automatic Retries</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-3">Provides seamless Pydantic validation and automatic retry loops across all LLM providers:</p>
+            <pre class="bg-black/60 p-3 rounded-lg text-xs font-mono text-purple-300 overflow-x-auto border border-slate-800">
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+
+client = instructor.from_openai(OpenAI())
+
+class ClinicalRecord(BaseModel):
+    patient_age: int = Field(ge=0, le=120)
+    diagnosis: str
+    medications: list[str]
+
+# Automatically retries if validation fails!
+record = client.chat.completions.create(
+    model="gpt-4o-mini",
+    response_model=ClinicalRecord,
+    max_retries=3,
+    messages=[{"role": "user", "content": "Patient is 45, diagnosed with Type 2 Diabetes, prescribed Metformin."}]
+)
+
+print(record.model_dump())</pre>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 9: SECURITY, STREAMING & ALTERNATIVES  -->
+    <!-- ========================================== -->
+    <section id="tab-security" class="tab-content hidden space-y-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        
+        <div class="border-b border-slate-800 pb-4 mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-400/30 text-rose-400 text-xs font-semibold mb-2">
+            Enterprise Hardening
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">JSON Security, Partial Streaming & Format Comparisons</h2>
+          <p class="text-slate-400 text-sm mt-1">Guarding against prototype pollution, parsing real-time partial LLM token streams, and choosing between JSON, Protobuf, and Parquet.</p>
+        </div>
+
+        <!-- Security Vulnerabilities Grid -->
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 text-rose-400">
+          <span>Top 5 JSON Security Vulnerabilities in Production</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          
+          <div class="bg-slate-950 border border-rose-900/60 rounded-xl p-4">
+            <h4 class="text-sm font-bold text-rose-400 mb-1">1. Prototype Pollution</h4>
+            <p class="text-xs text-slate-300 leading-relaxed mb-2">
+              In JavaScript/Node.js, parsing untrusted JSON containing keys like <code class="text-rose-300">"__proto__"</code> or <code class="text-rose-300">"constructor.prototype"</code> can mutate the global Object prototype, leading to Remote Code Execution (RCE).
+            </p>
+            <div class="text-[11px] font-mono text-emerald-400 bg-black/40 p-2 rounded">
+              Mitigation: Reject keys named "__proto__" or use Object.create(null).
+            </div>
+          </div>
+
+          <div class="bg-slate-950 border border-rose-900/60 rounded-xl p-4">
+            <h4 class="text-sm font-bold text-rose-400 mb-1">2. Denial of Service (JSON Bomb)</h4>
+            <p class="text-xs text-slate-300 leading-relaxed mb-2">
+              Deeply nested structures (e.g. 5,000 nested brackets <code class="text-rose-300">[[[[...]]]]</code>) trigger recursive parser call-stack overflows, terminating Node.js or Python backend processes instantly.
+            </p>
+            <div class="text-[11px] font-mono text-emerald-400 bg-black/40 p-2 rounded">
+              Mitigation: Enforce max parsing depth (e.g., max 20 levels in parser).
+            </div>
+          </div>
+
+          <div class="bg-slate-950 border border-rose-900/60 rounded-xl p-4">
+            <h4 class="text-sm font-bold text-rose-400 mb-1">3. Duplicate Key Collision Attacks</h4>
+            <p class="text-xs text-slate-300 leading-relaxed mb-2">
+              RFC 8259 does not mandate whether the first or last duplicate key wins. An attacker crafts <code class="text-rose-300">{"role": "user", "role": "admin"}</code>. If the security gateway verifies the first key but the backend DB reads the last key, authentication is bypassed.
+            </p>
+            <div class="text-[11px] font-mono text-emerald-400 bg-black/40 p-2 rounded">
+              Mitigation: Use I-JSON compliant parsers that reject duplicate keys.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Real-Time Streaming Parsers -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-8">
+          <h3 class="text-sm font-bold text-sky-400 mb-2 flex items-center gap-2">
+            <span>Parsing LLM Streams in Real-Time (Partial JSON Token Decoding)</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed mb-3">
+            When streaming tokens from an LLM into a frontend UI, the JSON is incomplete at every chunk (e.g., <code class="text-amber-300">{"items": [{"id": 1, "name": "Al</code>). Standard <code class="text-rose-300">JSON.parse()</code> will throw a syntax error on every frame until the final bracket arrives.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+              <div class="text-slate-400 mb-1">// Solution: partial-json-parser (npm / pip)</div>
+              <pre class="text-sky-300 whitespace-pre">import { parse } from "partial-json";
+
+// Incomplete chunk from LLM stream:
+const chunk = '{"status": "ok", "tags": ["fast", "ai"';
+const partialObj = parse(chunk);
+console.log(partialObj);
+// Output: { status: "ok", tags: ["fast", "ai"] }
+// Renders live UI cards without waiting for EOF!</pre>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-slate-300 space-y-1 font-sans">
+              <strong class="text-sky-400 block font-mono">// How It Works Under the Hood:</strong>
+              <div>1. Detects incomplete strings and adds temporary closing quotation marks.</div>
+              <div>2. Scans open bracket and brace stacks and synthesizes closing tokens.</div>
+              <div>3. Enables 60 FPS real-time rendering of complex LLM dashboards.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- JSON vs Alternatives Comparison Matrix -->
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <span>Architectural Comparison: JSON vs Modern Serialization Formats</span>
+        </h3>
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-800 text-slate-200">
+              <tr>
+                <th class="p-3">Format</th>
+                <th class="p-3">Type Encoding</th>
+                <th class="p-3">Schema Required?</th>
+                <th class="p-3">Payload Size</th>
+                <th class="p-3">Throughput (Speed)</th>
+                <th class="p-3">Primary Best Use</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950 text-slate-300">
+              <tr>
+                <td class="p-3 font-bold text-sky-400">JSON</td>
+                <td class="p-3">Text-based (Unicode)</td>
+                <td class="p-3 text-slate-400">Optional (JSON Schema)</td>
+                <td class="p-3 text-amber-400">Medium (Verbose keys)</td>
+                <td class="p-3 text-emerald-400">Fast (SIMD-accelerated)</td>
+                <td class="p-3">Public Web APIs, Microservices, LLM outputs</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-amber-400">YAML</td>
+                <td class="p-3">Text-based (Indented)</td>
+                <td class="p-3 text-slate-400">No</td>
+                <td class="p-3 text-amber-400">Medium</td>
+                <td class="p-3 text-rose-400">Slow (Complex indentation rules)</td>
+                <td class="p-3">Kubernetes configs, CI/CD pipelines</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-cyan-400">TOML</td>
+                <td class="p-3">Text-based (Sections)</td>
+                <td class="p-3 text-slate-400">No</td>
+                <td class="p-3 text-amber-400">Medium</td>
+                <td class="p-3 text-amber-400">Moderate</td>
+                <td class="p-3">Rust Cargo.toml, Python pyproject.toml</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-emerald-400">Protocol Buffers</td>
+                <td class="p-3">Binary (Varints)</td>
+                <td class="p-3 text-emerald-400 font-bold">Mandatory (.proto)</td>
+                <td class="p-3 text-emerald-400 font-bold">Ultra-Small (5-10x smaller)</td>
+                <td class="p-3 text-emerald-300 font-extrabold">Instant (Zero-copy serialization)</td>
+                <td class="p-3">Internal high-throughput gRPC microservices</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-purple-400">Apache Parquet</td>
+                <td class="p-3">Binary (Columnar)</td>
+                <td class="p-3 text-emerald-400 font-bold">Mandatory</td>
+                <td class="p-3 text-emerald-400 font-bold">Ultra-Compressed (Snappy/Gzip)</td>
+                <td class="p-3 text-emerald-400">Blazing on columnar queries</td>
+                <td class="p-3">Data lakes (Snowflake, BigQuery, Databricks)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive JavaScript Engine -->
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+      
+      const targetContent = document.getElementById(tabId);
+      if (targetContent) targetContent.classList.remove('hidden');
+
+      const targetBtn = document.querySelector(`[data-target="${tabId}"]`);
+      if (targetBtn) targetBtn.classList.add('tab-active');
+    }
+
+    function copyToClipboard(elementId, btn) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = `<span class="text-emerald-300 font-bold">✓ Copied!</span>`;
+        setTimeout(() => { btn.innerHTML = orig; }, 2000);
+      });
+    }
+
+    const presets = {
+      markdown: `Here is the requested user data in JSON format:\n\`\`\`json\n{\n  "user_id": 1042,\n  "role": "admin",\n  "active": true\n}\n\`\`\`\nLet me know if you need any adjustments!`,
+      trailing: `{\n  "project": "Antigravity",\n  "version": 2.0,\n  "modules": [\n    "core",\n    "agents",\n    "skills",\n  ],\n  "enterprise_ready": true,\n}`,
+      singlequotes: `{\n  'user_name': 'Grace Hopper',\n  'is_pioneer': True,\n  'assigned_task': None,\n  'flags': ['cobol', 'compiler',]\n}`,
+      unclosed: `{\n  "status": "processing",\n  "batch_id": "b-99120",\n  "records": [\n    {"id": 1, "status": "ok"},\n    {"id": 2, "status": "pending"`,
+      clean: `{\n  "project": "Antigravity",\n  "version": 2.0,\n  "status": "success",\n  "tags": ["ai", "json", "rfc8259"],\n  "metadata": {\n    "created_at": "2026-10-15T08:00:00Z",\n    "verified": true,\n    "error_count": 0\n  }\n}`
+    };
+
+    function loadSample(key) {
+      document.getElementById('json-input').value = presets[key] || '';
+      validateJson();
+    }
+
+    function clearPlayground() {
+      document.getElementById('json-input').value = '';
+      document.getElementById('diagnostic-box').innerHTML = '<div class="text-slate-500 italic">Playground cleared. Enter or paste JSON...</div>';
+      const badge = document.getElementById('status-badge');
+      badge.textContent = 'Idle';
+      badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium';
+    }
+
+    function formatInput() {
+      const input = document.getElementById('json-input').value.trim();
+      try {
+        const parsed = JSON.parse(input);
+        document.getElementById('json-input').value = JSON.stringify(parsed, null, 2);
+        validateJson();
+      } catch (err) {
+        alert("Cannot format: Input contains syntax errors. Run 'Auto-Repair' first!");
+      }
+    }
+
+    function validateJson() {
+      const input = document.getElementById('json-input').value;
+      const diagBox = document.getElementById('diagnostic-box');
+      const badge = document.getElementById('status-badge');
+
+      if (!input.trim()) {
+        diagBox.innerHTML = '<div class="text-amber-400">Please provide JSON input to test.</div>';
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(input);
+        badge.textContent = 'Valid RFC 8259';
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-semibold';
+        
+        diagBox.innerHTML = `
+          <div class="text-emerald-400 font-bold mb-2">✓ Valid RFC 8259 JSON Document</div>
+          <div class="text-slate-400 text-xs mb-3">Passed native JSON.parse() with 0 errors. Parsed Root Type: <span class="text-sky-300 font-bold">${Array.isArray(parsed) ? 'Array' : typeof parsed}</span></div>
+          <div class="p-3 bg-black/50 rounded-lg text-emerald-300 overflow-x-auto">${escapeHtml(JSON.stringify(parsed, null, 2))}</div>
+        `;
+      } catch (err) {
+        badge.textContent = 'Invalid / Hallucinated';
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-rose-950 text-rose-400 border border-rose-800 font-semibold';
+
+        let hints = [];
+        if (/```/.test(input)) hints.push("Markdown fences (```) detected wrapping the output.");
+        if (/None|True|False/.test(input)) hints.push("Python language literals (None, True, False) detected instead of (null, true, false).");
+        if (/'/.test(input)) hints.push("Single quotes (') detected; RFC 8259 strictly requires double quotes (\").");
+        if (/,\s*[}\]]/.test(input)) hints.push("Trailing comma before closing bracket/brace detected.");
+        if (input.includes("{") && !input.includes("}")) hints.push("Unclosed root object '{' detected (likely token limit truncation).");
+
+        diagBox.innerHTML = `
+          <div class="text-rose-400 font-bold mb-1">✕ Syntactic Validation Failed</div>
+          <div class="text-rose-300 text-xs mb-3 font-mono">${escapeHtml(err.message)}</div>
+          
+          ${hints.length > 0 ? `
+            <div class="bg-rose-950/40 border border-rose-800/60 rounded-lg p-3 mb-3">
+              <div class="text-xs font-semibold text-rose-300 mb-1">Detected Hallucination Patterns:</div>
+              <ul class="text-[11px] text-rose-200 list-disc list-inside space-y-1">
+                ${hints.map(h => `<li>${escapeHtml(h)}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          <div class="text-slate-400 text-xs">
+            👉 Click <strong class="text-purple-400">"2. Auto-Repair Hallucinations"</strong> to automatically strip wrappers and synthesize valid JSON.
+          </div>
+        `;
+      }
+    }
+
+    function autoRepairJson() {
+      let raw = document.getElementById('json-input').value;
+      const diagBox = document.getElementById('diagnostic-box');
+      const badge = document.getElementById('status-badge');
+
+      if (!raw.trim()) {
+        diagBox.innerHTML = '<div class="text-amber-400">Please provide JSON input to repair.</div>';
+        return;
+      }
+
+      let repaired = raw;
+      let logs = [];
+
+      // 1. Strip conversational markdown code fence
+      if (/```/.test(repaired)) {
+        const match = repaired.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+        if (match) {
+          repaired = match[1];
+          logs.push("Stripped markdown code fences and conversational preamble.");
+        } else {
+          repaired = repaired.replace(/```[a-z]*|```/gi, '');
+          logs.push("Removed unmatched code fence markers.");
+        }
+      }
+
+      // 2. Remove conversational preamble if no fences
+      const firstBrace = repaired.indexOf('{');
+      const firstBracket = repaired.indexOf('[');
+      let startIndex = -1;
+      if (firstBrace !== -1 && firstBracket !== -1) startIndex = Math.min(firstBrace, firstBracket);
+      else if (firstBrace !== -1) startIndex = firstBrace;
+      else if (firstBracket !== -1) startIndex = firstBracket;
+
+      if (startIndex > 0) {
+        repaired = repaired.substring(startIndex);
+        logs.push("Trimmed conversational chat preamble preceding JSON opening token.");
+      }
+
+      // 3. Convert Python literals
+      if (/\bTrue\b/.test(repaired)) { repaired = repaired.replace(/\bTrue\b/g, 'true'); logs.push("Converted 'True' -> 'true'"); }
+      if (/\bFalse\b/.test(repaired)) { repaired = repaired.replace(/\bFalse\b/g, 'false'); logs.push("Converted 'False' -> 'false'"); }
+      if (/\bNone\b/.test(repaired)) { repaired = repaired.replace(/\bNone\b/g, 'null'); logs.push("Converted 'None' -> 'null'"); }
+
+      // 4. Convert single quotes to double quotes for keys and strings
+      if (/'([^'\\]*(?:\\.[^'\\]*)*)'\s*:/g.test(repaired)) {
+        repaired = repaired.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'\s*:/g, '"$1":');
+        logs.push("Replaced single quotes on object keys with valid double quotes.");
+      }
+      if (/:\s*'([^'\\]*(?:\\.[^'\\]*)*)'/g.test(repaired)) {
+        repaired = repaired.replace(/:\s*'([^'\\]*(?:\\.[^'\\]*)*)'/g, ': "$1"');
+        logs.push("Replaced single quotes on string values with valid double quotes.");
+      }
+      if (/\[\s*'([^'\\]*(?:\\.[^'\\]*)*)'/g.test(repaired) || /,\s*'([^'\\]*(?:\\.[^'\\]*)*)'/g.test(repaired)) {
+        repaired = repaired.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, '"$1"');
+        logs.push("Normalized array single-quoted elements to double quotes.");
+      }
+
+      // 5. Strip trailing commas
+      if (/,\s*([}\]])/g.test(repaired)) {
+        repaired = repaired.replace(/,\s*([}\]])/g, '$1');
+        logs.push("Removed illegal trailing commas before closing braces/brackets.");
+      }
+
+      // 6. Balance unclosed braces/brackets if truncated
+      let openBraces = (repaired.match(/\{/g) || []).length;
+      let closeBraces = (repaired.match(/\}/g) || []).length;
+      let openBrackets = (repaired.match(/\[/g) || []).length;
+      let closeBrackets = (repaired.match(/\]/g) || []).length;
+
+      while (closeBrackets < openBrackets) {
+        repaired += ']';
+        closeBrackets++;
+        logs.push("Synthesized missing closing square bracket ']'");
+      }
+      while (closeBraces < openBraces) {
+        repaired += '}';
+        closeBraces++;
+        logs.push("Synthesized missing closing curly brace '}'");
+      }
+
+      try {
+        const parsed = JSON.parse(repaired);
+        document.getElementById('json-input').value = JSON.stringify(parsed, null, 2);
+        badge.textContent = 'Repaired & Validated';
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800 font-semibold';
+
+        diagBox.innerHTML = `
+          <div class="text-purple-400 font-bold mb-2">⚡ Automated Repair Succeeded!</div>
+          <div class="bg-purple-950/40 border border-purple-800/60 rounded-lg p-3 mb-3">
+            <div class="text-xs font-semibold text-purple-300 mb-1">Executed Transformations:</div>
+            <ul class="text-[11px] text-purple-200 list-disc list-inside space-y-1">
+              ${logs.map(l => `<li>${escapeHtml(l)}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="text-xs text-slate-300 mb-2">Formatted & Cleaned RFC 8259 Tree:</div>
+          <div class="p-3 bg-black/50 rounded-lg text-emerald-300 overflow-x-auto">${escapeHtml(JSON.stringify(parsed, null, 2))}</div>
+        `;
+      } catch (err) {
+        diagBox.innerHTML = `
+          <div class="text-rose-400 font-bold mb-2">✕ Heuristic Repair Partially Failed</div>
+          <div class="text-xs text-slate-300 mb-2">Applied fixes, but remaining syntax error persists: <code class="text-rose-300">${escapeHtml(err.message)}</code></div>
+          <div class="p-3 bg-black/50 rounded-lg text-amber-300 overflow-x-auto mb-3">${escapeHtml(repaired)}</div>
+          <div class="text-xs text-slate-400">Consider invoking closed-loop LLM self-correction with Template 4.</div>
+        `;
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ==========================================
+    // SYNTHESIZER ENGINE & PRESETS
+    // ==========================================
+    const synthPresets = {
+      ecommerce: JSON.stringify({
+        "order_id": "ORD-94012",
+        "customer_id": 4821,
+        "customer_email": "jane.doe@example.com",
+        "items": [
+          { "sku": "PROD-A1", "quantity": 2, "unit_price": 49.99 }
+        ],
+        "total_usd": 99.98,
+        "is_paid": true,
+        "promo_code": null
+      }, null, 2),
+      clinical: JSON.stringify({
+        "patient_id": "PT-8812",
+        "age": 52,
+        "primary_diagnosis": "Hypertension Stage 2",
+        "systolic_bp": 142,
+        "diastolic_bp": 92,
+        "medications": ["Lisinopril 10mg", "Amlodipine 5mg"],
+        "smoker": false,
+        "follow_up_date": "2026-11-15"
+      }, null, 2),
+      financial: JSON.stringify({
+        "ticker": "GOOGL",
+        "fiscal_quarter": "Q3 2026",
+        "revenue_billions": 88.2,
+        "operating_margin": 0.32,
+        "yoy_growth_pct": 14.5,
+        "headcount": 182000,
+        "primary_risks": [
+          "Regulatory antitrust scrutiny",
+          "Cloud infrastructure CapEx inflation"
+        ]
+      }, null, 2),
+      user: JSON.stringify({
+        "user_id": 9901,
+        "username": "ada_lovelace",
+        "tier": "ENTERPRISE",
+        "credits_remaining": 45000,
+        "api_access_enabled": true,
+        "teams": ["engineering", "ai-research"]
+      }, null, 2)
+    };
+
+    function loadSynthPreset(key) {
+      document.getElementById('synth-input').value = synthPresets[key] || '';
+      synthesizeArtifacts();
+    }
+
+    let activeSynthTab = 'synth-jsonschema';
+    function switchSynthSubTab(subtabId) {
+      activeSynthTab = subtabId;
+      document.querySelectorAll('.synth-pane').forEach(el => el.classList.add('hidden'));
+      document.getElementById(subtabId).classList.remove('hidden');
+
+      ['synth-jsonschema', 'synth-pydantic', 'synth-zod', 'synth-prompt'].forEach(id => {
+        const btn = document.getElementById('btn-' + id);
+        if (btn) {
+          if (id === subtabId) {
+            btn.className = 'px-3 py-1 rounded-md subtab-active transition';
+          } else {
+            btn.className = 'px-3 py-1 rounded-md bg-slate-800 text-slate-300 hover:text-white transition';
+          }
+        }
+      });
+    }
+
+    function copyActiveSynthTab() {
+      const activeEl = document.getElementById(activeSynthTab);
+      if (activeEl) {
+        navigator.clipboard.writeText(activeEl.innerText).then(() => {
+          alert("Copied " + activeSynthTab.replace('synth-', '').toUpperCase() + " to clipboard!");
+        });
+      }
+    }
+
+    // Helper: Infer JSON Schema Type
+    function inferType(val) {
+      if (val === null) return "null";
+      if (Array.isArray(val)) return "array";
+      if (typeof val === "number") return Number.isInteger(val) ? "integer" : "number";
+      return typeof val;
+    }
+
+    // Core Synthesizer
+    function synthesizeArtifacts() {
+      const raw = document.getElementById('synth-input').value.trim();
+      if (!raw) {
+        alert("Please paste a JSON sample first.");
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (err) {
+        alert("Syntax Error in Input JSON: " + err.message + "\nFix syntax or use preset.");
+        return;
+      }
+
+      if (typeof parsed !== 'object' || Array.isArray(parsed) || parsed === null) {
+        alert("Please provide a root JSON Object (not array or scalar).");
+        return;
+      }
+
+      // 1. Generate JSON Schema Draft 2020-12
+      const properties = {};
+      const required = [];
+      for (const [key, val] of Object.entries(parsed)) {
+        required.push(key);
+        const t = inferType(val);
+        if (t === "array") {
+          const itemType = val.length > 0 ? inferType(val[0]) : "string";
+          properties[key] = { type: "array", items: { type: itemType } };
+        } else if (t === "null") {
+          properties[key] = { type: ["string", "null"] };
+        } else if (t === "object") {
+          properties[key] = { type: "object", additionalProperties: false };
+        } else {
+          properties[key] = { type: t };
+        }
+      }
+
+      const jsonSchema = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "SynthesizedEntityModel",
+        "type": "object",
+        "properties": properties,
+        "required": required,
+        "additionalProperties": false
+      };
+      document.getElementById('synth-jsonschema').textContent = JSON.stringify(jsonSchema, null, 2);
+
+      // 2. Generate Pydantic V2 Model
+      let pydanticCode = "from pydantic import BaseModel, Field, ConfigDict\nfrom typing import Optional, List, Any\n\n";
+      pydanticCode += "class SynthesizedEntityModel(BaseModel):\n";
+      pydanticCode += "    # Strictly forbid any hallucinated or unlisted keys\n";
+      pydanticCode += "    model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)\n\n";
+
+      for (const [key, val] of Object.entries(parsed)) {
+        const t = inferType(val);
+        let pyType = "str";
+        if (t === "integer") pyType = "int";
+        else if (t === "number") pyType = "float";
+        else if (t === "boolean") pyType = "bool";
+        else if (t === "null") pyType = "Optional[str] = None";
+        else if (t === "array") {
+          const itemT = val.length > 0 ? inferType(val[0]) : "str";
+          const pyItemT = itemT === "integer" ? "int" : itemT === "number" ? "float" : itemT === "boolean" ? "bool" : "str";
+          pyType = `List[${pyItemT}]`;
+        } else if (t === "object") pyType = "dict";
+
+        if (t === "null") {
+          pydanticCode += `    ${key}: ${pyType}\n`;
+        } else {
+          pydanticCode += `    ${key}: ${pyType} = Field(description="Strict ${key} extraction")\n`;
+        }
+      }
+      document.getElementById('synth-pydantic').textContent = pydanticCode;
+
+      // 3. Generate Zod TypeScript Schema
+      let zodCode = 'import { z } from "zod";\n\n';
+      zodCode += "export const SynthesizedEntitySchema = z.object({\n";
+      for (const [key, val] of Object.entries(parsed)) {
+        const t = inferType(val);
+        let zType = "z.string()";
+        if (t === "integer") zType = "z.number().int()";
+        else if (t === "number") zType = "z.number()";
+        else if (t === "boolean") zType = "z.boolean()";
+        else if (t === "null") zType = "z.string().nullable()";
+        else if (t === "array") {
+          const itemT = val.length > 0 ? inferType(val[0]) : "string";
+          const zItem = itemT === "integer" ? "z.number().int()" : itemT === "number" ? "z.number()" : itemT === "boolean" ? "z.boolean()" : "z.string()";
+          zType = `z.array(${zItem})`;
+        } else if (t === "object") zType = "z.record(z.any())";
+
+        zodCode += `  ${key}: ${zType},\n`;
+      }
+      zodCode += "}).strict(); // CRITICAL: .strict() rejects hallucinated keys\n\n";
+      zodCode += "export type SynthesizedEntity = z.infer<typeof SynthesizedEntitySchema>;\n";
+      document.getElementById('synth-zod').textContent = zodCode;
+
+      // 4. Generate Calibrated Anti-Hallucination System Prompt
+      let promptCode = "You are a deterministic, zero-hallucination data serialization engine.\n";
+      promptCode += "Output ONLY a valid RFC 8259 JSON object conforming strictly to the target contract below.\n\n";
+      promptCode += "CRITICAL RULES:\n";
+      promptCode += "1. RAW OUTPUT ONLY: Do NOT output markdown fences (```json or ```). Start directly with { and end with }.\n";
+      promptCode += "2. NO FILLER: Never output conversational commentary (e.g., 'Here is the JSON').\n";
+      promptCode += "3. MANDATORY ATTRIBUTES:\n";
+      for (const key of Object.keys(parsed)) {
+        promptCode += `   - "${key}": required. If missing or unverifiable in source text, set strictly to null.\n`;
+      }
+      promptCode += "4. NO INVENTED KEYS: Any key outside this schema violates production safety and will crash downstream parsers.\n\n";
+      promptCode += "TARGET SCHEMA:\n" + JSON.stringify(jsonSchema, null, 2) + "\n\n";
+      promptCode += "INPUT DOCUMENT:\n{source_document}";
+      document.getElementById('synth-prompt').textContent = promptCode;
+    }
+
+    // ==========================================
+    // SEARCH & FILTER ENGINE
+    // ==========================================
+    function handleSearch(term) {
+      const q = term.toLowerCase().trim();
+      if (!q) return;
+
+      const mapping = [
+        { term: "rfc", tab: "tab-fundamentals" },
+        { term: "ebnf", tab: "tab-fundamentals" },
+        { term: "ieee", tab: "tab-fundamentals" },
+        { term: "53", tab: "tab-fundamentals" },
+        { term: "number", tab: "tab-fundamentals" },
+        { term: "string", tab: "tab-fundamentals" },
+        { term: "escape", tab: "tab-fundamentals" },
+        { term: "json5", tab: "tab-variants" },
+        { term: "jsonc", tab: "tab-variants" },
+        { term: "ndjson", tab: "tab-variants" },
+        { term: "jsonl", tab: "tab-variants" },
+        { term: "geojson", tab: "tab-variants" },
+        { term: "json-ld", tab: "tab-variants" },
+        { term: "bson", tab: "tab-variants" },
+        { term: "cbor", tab: "tab-variants" },
+        { term: "bpe", tab: "tab-hallucination" },
+        { term: "token", tab: "tab-hallucination" },
+        { term: "schema hallucination", tab: "tab-hallucination" },
+        { term: "pydantic", tab: "tab-mitigation" },
+        { term: "zod", tab: "tab-mitigation" },
+        { term: "repair", tab: "tab-playground" },
+        { term: "prompt", tab: "tab-prompts" },
+        { term: "synthesizer", tab: "tab-synthesizer" },
+        { term: "gemini", tab: "tab-sdks" },
+        { term: "openai", tab: "tab-sdks" },
+        { term: "claude", tab: "tab-sdks" },
+        { term: "instructor", tab: "tab-sdks" },
+        { term: "security", tab: "tab-security" },
+        { term: "pollution", tab: "tab-security" },
+        { term: "bomb", tab: "tab-security" },
+        { term: "streaming", tab: "tab-security" },
+        { term: "protobuf", tab: "tab-security" },
+        { term: "parquet", tab: "tab-security" }
+      ];
+
+      for (const item of mapping) {
+        if (q.includes(item.term)) {
+          switchTab(item.tab);
+          break;
+        }
+      }
+    }
+
+    // Auto-load first synthesizer sample on start
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('synth-input').value = synthPresets.ecommerce;
+      synthesizeArtifacts();
+    });
+  </script>
+</body>
+</html>

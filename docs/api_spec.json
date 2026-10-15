@@ -1,0 +1,46 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "JSON Master Portal Synthesizer & Validator API",
+    "version": "1.0.0",
+    "description": "API contract specification for the client-side JSON synthesizer, schema generator, and diagnostic repair tools."
+  },
+  "paths": {
+    "/synthesize": {
+      "post": {
+        "summary": "Synthesize schema contracts from sample JSON object",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Synthesized contracts and prompts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "json_schema": { "type": "object" },
+                    "pydantic_v2_code": { "type": "string" },
+                    "zod_ts_code": { "type": "string" },
+                    "system_prompt": { "type": "string" }
+                  },
+                  "required": ["json_schema", "pydantic_v2_code", "zod_ts_code", "system_prompt"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
